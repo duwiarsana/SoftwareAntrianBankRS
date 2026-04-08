@@ -41,6 +41,9 @@ function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
+        <div style={{ position: 'fixed', bottom: '10px', right: '10px', fontSize: '10px', color: '#94a3b8', zIndex: 9999, pointerEvents: 'none' }}>
+          duwiarsana 2026
+        </div>
       </BrowserRouter>
     </AuthProvider>
   );
