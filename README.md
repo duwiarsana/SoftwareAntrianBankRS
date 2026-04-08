@@ -23,6 +23,43 @@ QueuePro adalah sistem manajemen antrian modern berbasis web yang dirancang untu
 
 ---
 
+## 🖼️ Tangkapan Layar (Screenshots) & Penjelasan Antarmuka
+
+Berikut adalah tampilan antarmuka dari masing-masing fitur dalam sistem QueuePro beserta penjelasannya:
+
+### 1. Halaman Utama (Landing Page)
+![Landing Page](docs/screenshots/home.png)
+Halaman awal saat user pertama kali mengakses sistem. Halaman ini memberikan informasi singkat mengenai platform QueuePro. Terdapat tombol untuk menuju ke Dashboard atau sekilas melihat Status Antrian. Jika Anda belum memiliki akun organisasi, Anda bisa membuat atau mendaftar dari halaman awal jika fitur pendaftaran terbuka.
+
+### 2. Halaman Kiosk (Pengambilan Tiket)
+![Kiosk / Pengambilan Tiket](docs/screenshots/kiosk.png)
+Antarmuka untuk pengunjung yang ingin mengambil nomor antrian. Layar ini sangat cocok dipasang di tablet atau layar sentuh. Pengunjung cukup menekan "Ambil Tiket" pada layanan yang dituju, misalnya "Poli Umum", kemudian tiket antrian akan tercetak atau ditampilkan di layar.
+
+### 3. Layar Tampilan Ruang Tunggu (Display TV)
+![Display TV Antrian](docs/screenshots/display.png)
+Halaman yang difungsikan untuk ditampilkan pada layar TV (Smart TV/Monitor) di ruang tunggu. Layar ini menampilkan:
+- Nomor antrian yang **sedang dipanggil** dengan animasi dan Text-To-Speech (Pemanggilan Otomatis Bahasa Indonesia).
+- Daftar tunggu dan informasi terkait Counter (Loket) mana.
+- Ruang media (Video/Gambar) untuk kebutuhan digital signage / iklan.
+
+*(Catatan: Browser perlu diizinkan untuk otomatis memutar file suara (autoplay) agar pemanggilan otomatis berjalan.)*
+
+### 4. Admin Dashboard Pusat
+![Admin Dashboard](docs/screenshots/admin.png)
+Panel yang dapat diakses oleh Administrator Sistem (misalnya manajer klinik/bank) setelah berhasil login. Di sini Anda bisa:
+- Menambah/mengedit Loket (Counter).
+- Menambah/mengedit Layanan apa saja yang ada.
+- Menyesuaikan pengaturan video iklan untuk Layar Tampilan.
+
+### 5. Halaman Petugas Konter / Loket
+![Dashboard Petugas Loket](docs/screenshots/counter.png)
+Halaman yang digunakan oleh masing-masing Staf Petugas (misal: Teller 1, Poli Gigi, dsb) di komputernya.
+- **Panggil Berikutnya:** Untuk memanggil pengunjung di nomor selanjutnya secara otomatis.
+- **Panggil Ulang:** Untuk mengulangi panggilan via suara di TV.
+- **Selesai:** Menandai pengunjung telah selesai dilayani.
+
+---
+
 ## 🛠️ Teknologi yang Digunakan
 
 **Frontend (Client):**
