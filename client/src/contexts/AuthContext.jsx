@@ -51,6 +51,14 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  const loginWithGoogle = async (credential, orgName) => {
+    const data = await api.googleAuth(credential, orgName);
+    localStorage.setItem('queuepro_token', data.token);
+    setUser(data.user);
+    setOrg(data.org);
+    return data;
+  };
+
   const logout = () => {
     localStorage.removeItem('queuepro_token');
     setUser(null);
@@ -58,10 +66,11 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, org, loading, login, register, logout, setOrg }}>
+    <AuthContext.Provider value={{ user, org, loading, login, register, loginWithGoogle, logout, setOrg }}>
       {children}
     </AuthContext.Provider>
   );
+
 }
 
 export function useAuth() {

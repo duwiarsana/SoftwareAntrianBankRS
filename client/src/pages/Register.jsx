@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
 import './Auth.css';
 
@@ -10,7 +11,7 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -29,6 +30,31 @@ export default function Register() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    if (!orgName) {
+      setError('Nama Organisasi harus diisi sebelum mendaftar dengan Google.');
+      // Optional: focus the orgName input
+      return;
+    }
+    setLoading(true);
+    try {
+      await loginWithGoogle(credentialResponse.credential, orgName);
+      navigate('/admin');
+    } catch (err) {
+      setError(err.message || 'Gagal registrasi dengan Google');
+      if (err.requireOrg) {
+        setError('Pendaftaran dengan Google memerlukan Nama Organisasi. Silakan isi terlebih dahulu.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Login Google gagal.');
   };
 
   return (
@@ -101,9 +127,22 @@ export default function Register() {
               />
             </div>
             <button type="submit" className="btn btn-primary btn-lg w-full" disabled={loading}>
-              {loading ? 'Mendaftar...' : 'Daftar Sekarang'}
+              {loading ? 'Mendaftar...' : 'Daftar Secara Rekomen / Biasa'}
             </button>
+            <div className="auth-divider" style={{ margin: '20px 0', textAlign: 'center', color: '#94a3b8', fontSize: '0.875rem' }}>
+              ATAU
+            </div>
           </form>
+          
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <GoogleLogin
+               onSuccess={handleGoogleSuccess}
+               onError={handleGoogleError}
+               text="signup_with"
+               theme="filled_black"
+               shape="pill"
+            />
+          </div>
 
           <div className="auth-footer">
             <p>Sudah punya akun? <Link to="/login">Masuk</Link></p>

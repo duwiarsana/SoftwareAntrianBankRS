@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './contexts/AuthContext';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -13,9 +14,13 @@ import Counters from './pages/admin/Counters';
 import Advertisements from './pages/admin/Advertisements';
 import Settings from './pages/admin/Settings';
 
+// Fallback client ID so it doesn't crash if env is missing, though login will fail
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'PENDING_CLIENT_ID';
+
 function App() {
   return (
-    <AuthProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <AuthProvider>
       <BrowserRouter>
         <Routes>
           {/* Public */}
@@ -46,6 +51,7 @@ function App() {
         </div>
       </BrowserRouter>
     </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 

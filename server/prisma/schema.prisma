@@ -26,9 +26,13 @@ model Organization {
 model User {
   id       String @id @default(cuid())
   email    String @unique
-  password String
+  password String? // Buat optional karena login Google tidak pakai password
   name     String
   role     String @default("ADMIN")
+  
+  googleId   String? @unique
+  ipAddress  String?
+  ipLocation String?
 
   orgId String
   org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)

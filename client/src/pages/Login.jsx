@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../contexts/AuthContext';
 import './Auth.css';
 
@@ -8,8 +9,30 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setLoading(true);
+    try {
+      // Don't pass orgName, it should work if the user exists
+      await loginWithGoogle(credentialResponse.credential);
+      navigate('/admin');
+    } catch (err) {
+      if (err.requireOrg) {
+        setError('Akun tidak ditemukan. Silakan Daftar terlebih dahulu dan isi Nama Organisasi.');
+      } else {
+        setError(err.message || 'Login dengan Google gagal');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Login Google gagal.');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,9 +93,22 @@ export default function Login() {
               />
             </div>
             <button type="submit" className="btn btn-primary btn-lg w-full" disabled={loading}>
-              {loading ? 'Memproses...' : 'Masuk'}
+              {loading ? 'Memproses...' : 'Masuk Secara Manual'}
             </button>
+            <div className="auth-divider" style={{ margin: '20px 0', textAlign: 'center', color: '#94a3b8', fontSize: '0.875rem' }}>
+              ATAU
+            </div>
           </form>
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <GoogleLogin
+               onSuccess={handleGoogleSuccess}
+               onError={handleGoogleError}
+               text="signin_with"
+               theme="filled_black"
+               shape="pill"
+            />
+          </div>
 
           <div className="auth-footer">
             <p>Belum punya akun? <Link to="/register">Daftar sekarang</Link></p>

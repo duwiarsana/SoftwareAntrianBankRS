@@ -46,6 +46,11 @@ class ApiClient {
     return this.request('/auth/register', { method: 'POST', body: { orgName, name, email, password } });
   }
 
+  googleAuth(credential, orgName) {
+    return this.request('/auth/google', { method: 'POST', body: { credential, orgName } });
+  }
+
+
   getMe() {
     return this.request('/auth/me');
   }
