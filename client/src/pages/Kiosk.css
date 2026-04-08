@@ -1,0 +1,247 @@
+.kiosk-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.kiosk-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.kiosk-bg .bg-orb-1 {
+  width: 600px;
+  height: 600px;
+  background: var(--primary-500);
+  filter: blur(150px);
+  opacity: 0.1;
+  position: absolute;
+  top: -200px;
+  right: -100px;
+  border-radius: 50%;
+}
+
+.kiosk-bg .bg-orb-2 {
+  width: 500px;
+  height: 500px;
+  background: var(--accent-500);
+  filter: blur(150px);
+  opacity: 0.08;
+  position: absolute;
+  bottom: -200px;
+  left: -100px;
+  border-radius: 50%;
+}
+
+.kiosk-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1000px;
+  padding: 40px;
+  text-align: center;
+}
+
+.kiosk-header {
+  margin-bottom: 48px;
+}
+
+.kiosk-org-name {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.kiosk-header h1 {
+  font-size: 2.8rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kiosk-header p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.kiosk-services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.kiosk-service-btn {
+  padding: 40px 24px;
+  background: var(--bg-glass);
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  animation: fadeInUp 0.5s ease-out both;
+}
+
+.kiosk-service-btn:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--primary-500);
+  box-shadow: var(--shadow-glow-strong);
+}
+
+.kiosk-service-btn:active {
+  transform: scale(0.98);
+}
+
+.service-icon {
+  font-size: 3.5rem;
+  margin-bottom: 16px;
+}
+
+.service-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.service-prefix {
+  font-size: 0.9rem;
+  color: var(--primary-400);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.service-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.kiosk-footer {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* Ticket Confirmation */
+.kiosk-ticket {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 500px;
+  padding: 24px;
+}
+
+.ticket-card {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.ticket-header {
+  padding: 24px;
+  text-align: center;
+  border-bottom: 2px dashed var(--border-color);
+}
+
+.ticket-org {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.ticket-service {
+  font-size: 0.95rem;
+  color: var(--primary-400);
+  font-weight: 600;
+}
+
+.ticket-body {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.ticket-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+
+.ticket-number-display {
+  font-family: var(--font-mono);
+  font-size: 6rem;
+  font-weight: 900;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: ticketPop 0.6s var(--transition-spring);
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.ticket-time {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.ticket-footer {
+  padding: 24px;
+  text-align: center;
+  border-top: 2px dashed var(--border-color);
+}
+
+.ticket-footer p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.ticket-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kiosk-error {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.kiosk-error .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+/* Print styles */
+@media print {
+  .no-print { display: none !important; }
+  .kiosk-bg { display: none !important; }
+  .kiosk-page { background: white !important; }
+  .ticket-card {
+    background: white !important;
+    color: black !important;
+    border: 2px solid #333 !important;
+  }
+  .ticket-number-display {
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+  }
+  .ticket-org, .ticket-service, .ticket-label, .ticket-time, .ticket-footer p {
+    color: #333 !important;
+  }
+}

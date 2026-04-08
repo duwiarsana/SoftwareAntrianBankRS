@@ -1,0 +1,49 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Kiosk from './pages/Kiosk';
+import Display from './pages/Display';
+import Counter from './pages/Counter';
+import AdminLayout from './pages/admin/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import Services from './pages/admin/Services';
+import Counters from './pages/admin/Counters';
+import Advertisements from './pages/admin/Advertisements';
+import Settings from './pages/admin/Settings';
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Kiosk - Customer facing */}
+          <Route path="/kiosk/:orgSlug" element={<Kiosk />} />
+
+          {/* Display - TV Monitor */}
+          <Route path="/display/:orgSlug" element={<Display />} />
+
+          {/* Counter - Staff */}
+          <Route path="/counter/:orgSlug" element={<Counter />} />
+
+          {/* Admin Dashboard */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="services" element={<Services />} />
+            <Route path="counters" element={<Counters />} />
+            <Route path="ads" element={<Advertisements />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+export default App;
