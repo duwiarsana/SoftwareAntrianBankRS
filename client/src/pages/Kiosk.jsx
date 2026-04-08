@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { connectSocket, disconnectSocket } from '../lib/socket';
+import { applyTheme } from '../lib/theme';
 import './Kiosk.css';
 
 export default function Kiosk() {
@@ -31,6 +32,11 @@ export default function Kiosk() {
       const data = await api.getPublicServices(orgSlug);
       setServices(data.services);
       setOrg(data.org);
+      if (data.org?.settings?.themeColor) {
+        applyTheme(data.org.settings.themeColor);
+      } else {
+        applyTheme('indigo');
+      }
     } catch (err) {
       setError('Organisasi tidak ditemukan');
     } finally {

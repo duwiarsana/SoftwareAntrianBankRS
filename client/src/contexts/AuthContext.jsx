@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../lib/api';
+import { applyTheme } from '../lib/theme';
 
 const AuthContext = createContext(null);
 
@@ -24,6 +25,15 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
   }, []);
+
+  // Apply theme whenever org settings change
+  useEffect(() => {
+    if (org?.settings?.themeColor) {
+      applyTheme(org.settings.themeColor);
+    } else {
+      applyTheme('indigo'); // Default
+    }
+  }, [org?.settings?.themeColor]);
 
   const login = async (email, password) => {
     const data = await api.login(email, password);

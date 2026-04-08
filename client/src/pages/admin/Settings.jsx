@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { api } from '../../lib/api';
+import { THEMES, applyTheme } from '../../lib/theme';
 import './Admin.css';
 
 export default function Settings() {
@@ -87,6 +88,44 @@ export default function Settings() {
             <div className="input-group">
               <label>Slug URL</label>
               <input className="input" value={org?.slug || ''} disabled style={{ opacity: 0.5 }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Visual & Theme */}
+        <div className="glass-card" style={{ padding: '24px' }}>
+          <h2 style={{ fontSize: '1.1rem', marginBottom: '16px' }}>🎨 Tema & Visual</h2>
+          <div className="flex flex-col gap-4">
+            <div className="input-group">
+              <label>Warna Utama (Theme Color)</label>
+              <div className="flex gap-4 flex-wrap" style={{ marginTop: '8px' }}>
+                {THEMES.map(theme => {
+                  const isSelected = (settings.themeColor || 'indigo') === theme.id;
+                  return (
+                    <button
+                      key={theme.id}
+                      type="button"
+                      onClick={() => {
+                        setSettings({ ...settings, themeColor: theme.id });
+                        applyTheme(theme.id);
+                      }}
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        backgroundColor: theme.color,
+                        boxShadow: 'var(--shadow-sm)',
+                        border: isSelected ? '3px solid white' : '3px solid transparent',
+                        outline: isSelected ? `2px solid ${theme.color}` : 'none',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                      title={theme.name}
+                    />
+                  );
+                })}
+              </div>
+              <span className="text-muted text-sm" style={{ marginTop: '4px' }}>Pilih warna utama yang akan diterapkan ke seluruh tampilan aplikasi.</span>
             </div>
           </div>
         </div>

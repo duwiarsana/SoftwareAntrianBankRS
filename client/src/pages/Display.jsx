@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { connectSocket, disconnectSocket } from '../lib/socket';
 import { getAnnouncer } from '../lib/voice';
+import { applyTheme } from '../lib/theme';
 import './Display.css';
 
 export default function Display() {
@@ -99,6 +100,13 @@ export default function Display() {
       setWaiting(queueData.waiting);
       setStats(queueData.stats);
       setOrg(queueData.org);
+      
+      if (queueData.org?.settings?.themeColor) {
+        applyTheme(queueData.org.settings.themeColor);
+      } else {
+        applyTheme('indigo');
+      }
+
       if (adsData.advertisements.length > 0) {
         setAds(adsData.advertisements);
       }
