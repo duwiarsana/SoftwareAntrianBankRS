@@ -25,7 +25,11 @@ async function getIpLocation(ip) {
     if (!response.ok) return null;
     const data = await response.json();
     if (data.status === 'success') {
-      return `${data.city}, ${data.country}`;
+      return {
+        location: `${data.city}, ${data.country}`,
+        lat: data.lat,
+        lon: data.lon
+      };
     }
     return null;
   } catch (error) {
@@ -84,7 +88,9 @@ router.post('/register', async (req, res) => {
           role: 'ADMIN',
           orgId: org.id,
           ipAddress: ipAddress || null,
-          ipLocation: ipLocation || null,
+          ipLocation: ipLocation ? ipLocation.location : null,
+          ipLat: ipLocation ? ipLocation.lat : null,
+          ipLon: ipLocation ? ipLocation.lon : null,
         },
       });
 
@@ -292,7 +298,9 @@ router.post('/google', async (req, res) => {
           role: 'ADMIN',
           orgId: org.id,
           ipAddress: ipAddress || null,
-          ipLocation: ipLocation || null,
+          ipLocation: ipLocation ? ipLocation.location : null,
+          ipLat: ipLocation ? ipLocation.lat : null,
+          ipLon: ipLocation ? ipLocation.lon : null,
           // no password needed
         },
       });

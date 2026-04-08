@@ -33,9 +33,12 @@ model User {
   googleId   String? @unique
   ipAddress  String?
   ipLocation String?
+  ipLat      Float?
+  ipLon      Float?
 
   orgId String
   org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
