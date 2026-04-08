@@ -55,8 +55,20 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Static files
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Socket.io
 setupSocketHandlers(io);
+
+// SPA catch-all route
+app.get('*', (req, res, next) => {
+  // If request contains /api/ or is for uploads, don't serve index.html
+  if (req.url.startsWith('/api/') || req.url.startsWith('/uploads/')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
 const PORT = process.env.PORT || 3001;
 
