@@ -7,7 +7,7 @@ services:
       args:
         - VITE_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     ports:
-      - "3001:3001"
+      - "3005:3001"
     environment:
       - DATABASE_URL=file:./data/queuepro.db
       - JWT_SECRET=your-super-secret-key-change-this
