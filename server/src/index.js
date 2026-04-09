@@ -14,6 +14,7 @@ import counterRoutes from './routes/counters.js';
 import ticketRoutes from './routes/tickets.js';
 import adRoutes from './routes/advertisements.js';
 import orgRoutes from './routes/organizations.js';
+import masterRoutes from './routes/master.js';
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use('/api/counters', counterRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/advertisements', adRoutes);
 app.use('/api/organizations', orgRoutes);
+app.use('/api/master', masterRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

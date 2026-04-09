@@ -23,6 +23,10 @@ export default function AdminLayout() {
     { path: '/admin/settings', icon: '⚙️', label: 'Pengaturan' },
   ];
 
+  if (user.role === 'SUPER_ADMIN') {
+    menuItems.unshift({ path: '/admin/master', icon: '👑', label: 'Master Admin' });
+  }
+
   const isActive = (item) => {
     if (item.exact) return location.pathname === item.path;
     return location.pathname.startsWith(item.path);

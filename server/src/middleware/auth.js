@@ -19,15 +19,27 @@ export function authMiddleware(req, res, next) {
 }
 
 export function adminOnly(req, res, next) {
-  if (req.user.role !== 'ADMIN') {
+  if (req.user.role !== 'ADMIN' && req.user.role !== 'SUPER_ADMIN') {
     return res.status(403).json({ error: 'Akses ditolak, hanya admin' });
+  }
+  next();
+}
+
+export function superAdminOnly(req, res, next) {
+  if (req.user.role !== 'SUPER_ADMIN') {
+    return res.status(403).json({ error: 'Akses ditolak, hanya Master Account' });
   }
   next();
 }
 
 export function generateToken(user) {
   return jwt.sign(
-    { id: user.id, email: user.email, role: user.role, orgId: user.orgId },
+    { 
+      id: user.id, 
+      email: user.email, 
+      role: user.role, 
+      orgId: user.orgId || null 
+    },
     JWT_SECRET,
     { expiresIn: '7d' }
   );

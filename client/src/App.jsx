@@ -13,6 +13,7 @@ import Services from './pages/admin/Services';
 import Counters from './pages/admin/Counters';
 import Advertisements from './pages/admin/Advertisements';
 import Settings from './pages/admin/Settings';
+import MasterDashboard from './pages/admin/MasterDashboard';
 
 // Fallback client ID so it doesn't crash if env is missing, though login will fail
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'PENDING_CLIENT_ID';
@@ -44,6 +45,7 @@ function App() {
             <Route path="counters" element={<Counters />} />
             <Route path="ads" element={<Advertisements />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="master" element={<MasterDashboard />} />
           </Route>
         </Routes>
         <div style={{ position: 'fixed', bottom: '10px', right: '10px', fontSize: '10px', color: '#94a3b8', zIndex: 9999, pointerEvents: 'none' }}>

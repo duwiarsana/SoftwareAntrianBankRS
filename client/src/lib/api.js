@@ -174,6 +174,19 @@ class ApiClient {
   getStaff() {
     return this.request('/organizations/staff/list');
   }
+
+  // Master (Super Admin)
+  getMasterStats() {
+    return this.request('/master/stats');
+  }
+
+  getMasterOrgs() {
+    return this.request('/master/organizations');
+  }
+
+  deleteMasterOrg(id) {
+    return this.request(`/master/organizations/${id}`, { method: 'DELETE' });
+  }
 }
 
 export const api = new ApiClient();

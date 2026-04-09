@@ -8,96 +8,80 @@ datasource db {
 }
 
 model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  logo      String?
-  settings  String   @default("{}")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  users          User[]
-  services       Service[]
-  counters       Counter[]
-  tickets        Ticket[]
+  id             String          @id @default(cuid())
+  name           String
+  slug           String          @unique
+  logo           String?
+  settings       String          @default("{}")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   advertisements Advertisement[]
+  counters       Counter[]
+  services       Service[]
+  tickets        Ticket[]
+  users          User[]
 }
 
 model User {
-  id       String @id @default(cuid())
-  email    String @unique
-  password String? // Buat optional karena login Google tidak pakai password
-  name     String
-  role     String @default("ADMIN")
-  
-  googleId   String? @unique
+  id         String        @id @default(cuid())
+  email      String        @unique
+  password   String?
+  name       String
+  role       String        @default("ADMIN")
+  googleId   String?       @unique
   ipAddress  String?
   ipLocation String?
   ipLat      Float?
   ipLon      Float?
-
-  orgId String
-  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  orgId      String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  org        Organization? @relation(fields: [orgId], references: [id], onDelete: Cascade)
 }
 
 model Service {
-  id          String  @id @default(cuid())
+  id          String       @id @default(cuid())
   name        String
   prefix      String
   description String?
-  icon        String  @default("📋")
-  isActive    Boolean @default(true)
-  sortOrder   Int     @default(0)
-
-  orgId String
-  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-
-  tickets  Ticket[]
-  counters Counter[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  icon        String       @default("📋")
+  isActive    Boolean      @default(true)
+  sortOrder   Int          @default(0)
+  orgId       String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  counters    Counter[]
+  org         Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  tickets     Ticket[]
 }
 
 model Counter {
-  id       String  @id @default(cuid())
-  name     String
-  isActive Boolean @default(true)
-
-  orgId String
-  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-
+  id        String       @id @default(cuid())
+  name      String
+  isActive  Boolean      @default(true)
+  orgId     String
   serviceId String?
-  service   Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull)
-
-  tickets Ticket[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  service   Service?     @relation(fields: [serviceId], references: [id])
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  tickets   Ticket[]
 }
 
 model Ticket {
-  id           String   @id @default(cuid())
-  ticketNumber String
+  id            String       @id @default(cuid())
+  ticketNumber  String
   displayNumber Int
-  status       String   @default("WAITING")
-  
-  serviceId String
-  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-
-  counterId String?
-  counter   Counter? @relation(fields: [counterId], references: [id], onDelete: SetNull)
-
-  orgId String
-  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  calledAt  DateTime?
-  servedAt  DateTime?
+  status        String       @default("WAITING")
+  serviceId     String
+  counterId     String?
+  orgId         String
+  createdAt     DateTime     @default(now())
+  calledAt      DateTime?
+  servedAt      DateTime?
+  org           Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  counter       Counter?     @relation(fields: [counterId], references: [id])
+  service       Service      @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
   @@index([orgId, status])
   @@index([serviceId, status])
@@ -105,17 +89,15 @@ model Ticket {
 }
 
 model Advertisement {
-  id        String  @id @default(cuid())
+  id        String       @id @default(cuid())
   title     String
   mediaUrl  String
-  mediaType String  @default("IMAGE")
-  isActive  Boolean @default(true)
-  duration  Int     @default(5)
-  sortOrder Int     @default(0)
-
-  orgId String
-  org   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  mediaType String       @default("IMAGE")
+  isActive  Boolean      @default(true)
+  duration  Int          @default(5)
+  sortOrder Int          @default(0)
+  orgId     String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 }
