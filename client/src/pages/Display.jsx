@@ -243,7 +243,7 @@ export default function Display() {
                   {ads[currentAdIndex]?.mediaType === 'VIDEO' ? (
                     <video
                       key={ads[currentAdIndex].id}
-                      src={`http://localhost:3001${ads[currentAdIndex].mediaUrl}`}
+                      src={ads[currentAdIndex].mediaUrl}
                       autoPlay
                       muted
                       loop
@@ -252,7 +252,7 @@ export default function Display() {
                   ) : (
                     <img
                       key={ads[currentAdIndex].id}
-                      src={`http://localhost:3001${ads[currentAdIndex].mediaUrl}`}
+                      src={ads[currentAdIndex].mediaUrl}
                       alt={ads[currentAdIndex].title}
                       className="ad-media"
                     />

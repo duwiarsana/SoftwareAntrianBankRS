@@ -91,7 +91,7 @@ export default function Advertisements() {
               <div style={{ width: 80, height: 50, borderRadius: 8, overflow: 'hidden', background: 'var(--bg-tertiary)', flexShrink: 0 }}>
                 {ad.mediaUrl && (
                   <img
-                    src={`http://localhost:3001${ad.mediaUrl}`}
+                    src={ad.mediaUrl}
                     alt={ad.title}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
