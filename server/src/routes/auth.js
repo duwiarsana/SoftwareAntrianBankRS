@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import { prisma } from '../index.js';
 import { generateToken, authMiddleware } from '../middleware/auth.js';
+import { sendRegistrationReport } from '../services/email.js';
 
 const router = Router();
 
@@ -116,6 +117,17 @@ router.post('/register', async (req, res) => {
     });
 
     const token = generateToken(result.user);
+
+    // Send email report asynchronously
+    sendRegistrationReport({
+      name,
+      email,
+      orgName,
+      ipAddress,
+      ipLocation: ipLocation ? ipLocation.location : null,
+      ipLat: ipLocation ? ipLocation.lat : null,
+      ipLon: ipLocation ? ipLocation.lon : null
+    }).catch(err => console.error('Email report background error:', err));
 
     res.status(201).json({
       token,
@@ -327,6 +339,17 @@ router.post('/google', async (req, res) => {
     });
 
     const token = generateToken(result.user);
+
+    // Send email report asynchronously
+    sendRegistrationReport({
+      name,
+      email,
+      orgName,
+      ipAddress,
+      ipLocation: ipLocation ? ipLocation.location : null,
+      ipLat: ipLocation ? ipLocation.lat : null,
+      ipLon: ipLocation ? ipLocation.lon : null
+    }).catch(err => console.error('Email report background error:', err));
 
     return res.status(201).json({
       token,
