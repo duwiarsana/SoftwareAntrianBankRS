@@ -17,6 +17,7 @@ export default function Display() {
   const [callingTicket, setCallingTicket] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [audioEnabled, setAudioEnabled] = useState(false);
   const socketRef = useRef(null);
   const announcer = useRef(null);
 
@@ -139,9 +140,18 @@ export default function Display() {
 
   return (
     <div className="display-page" onClick={() => {
-      // Initialize audio context on first click (required by browsers)
-      if (!announcer.current) {
-        announcer.current = getAnnouncer();
+      if (!audioEnabled) {
+        if (!announcer.current) {
+          announcer.current = getAnnouncer();
+        }
+        // Initialize audio context on first click (required by browsers)
+        if (announcer.current.audioContext && announcer.current.audioContext.state === 'suspended') {
+          announcer.current.audioContext.resume().catch(e => console.log('Audio resume error:', e));
+        }
+        // Unlock speech synthesis
+        const msg = new SpeechSynthesisUtterance('');
+        window.speechSynthesis.speak(msg);
+        setAudioEnabled(true);
       }
     }}>
       {/* Background */}
@@ -287,9 +297,11 @@ export default function Display() {
       </div>
 
       {/* Click hint for audio */}
-      <div className="display-audio-hint" id="audioHint">
-        Klik layar untuk mengaktifkan suara 🔊
-      </div>
+      {!audioEnabled && (
+        <div className="display-audio-hint" id="audioHint">
+          Klik layar untuk mengaktifkan suara 🔊
+        </div>
+      )}
     </div>
   );
 }
