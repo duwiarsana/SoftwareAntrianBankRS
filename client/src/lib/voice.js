@@ -1,11 +1,11 @@
-// Voice announcement module using Web Speech API
+// Voice announcement module using Google TTS (Natural Voice)
 
 class VoiceAnnouncer {
   constructor() {
-    this.synth = window.speechSynthesis;
     this.queue = [];
     this.speaking = false;
     this.chimeAudio = null;
+    this.currentAudio = null;
     this.initChime();
   }
 
@@ -56,12 +56,20 @@ class VoiceAnnouncer {
   }
 
   async announce(ticketNumber, counterName, settings = {}) {
-    const lang = settings.voiceLang || 'id-ID';
-    const rate = settings.voiceRate || 0.9;
+    // Fallback to Indonesian 'id' for Google TTS
+    const lang = settings.voiceLang ? settings.voiceLang.split('-')[0] : 'id';
+    // Base template
     const template = settings.voiceTemplate || 'Nomor antrian {number}, silakan menuju {counter}';
 
+    // To make it sound more natural, we spell out the letters and numbers
+    // In Indonesian, e.g., A 0 1 2 is spelled "A kosong satu dua"
+    const parsedNumber = ticketNumber.split('').map(char => {
+       if (char === '0') return 'kosong';
+       return char;
+    }).join(' ');
+
     const text = template
-      .replace('{number}', ticketNumber.split('').join(' '))
+      .replace('{number}', parsedNumber)
       .replace('{counter}', counterName);
 
     // Play chime first
@@ -71,34 +79,36 @@ class VoiceAnnouncer {
     await new Promise(r => setTimeout(r, 400));
 
     return new Promise((resolve, reject) => {
-      // Cancel any ongoing speech
-      this.synth.cancel();
+      // Use Google TTS API for natural voice
+      const url = `https://translate.googleapis.com/translate_tts?client=gtx&tl=${lang}&ie=UTF-8&q=${encodeURIComponent(text)}`;
+      const audio = new Audio(url);
+      
+      // Optional: adjust rate if needed, though Google TTS sounds best at 1.0
+      // audio.playbackRate = settings.voiceRate || 1.0;
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = rate;
-      utterance.pitch = 1;
-      utterance.volume = 1;
+      this.speaking = true;
 
-      // Try to find an Indonesian voice
-      const voices = this.synth.getVoices();
-      const targetVoice = voices.find(v => v.lang === lang) ||
-                          voices.find(v => v.lang.startsWith(lang.split('-')[0]));
-      if (targetVoice) {
-        utterance.voice = targetVoice;
+      if (this.currentAudio) {
+        this.currentAudio.pause();
       }
+      this.currentAudio = audio;
 
-      utterance.onend = () => {
+      audio.onended = () => {
         this.speaking = false;
         resolve();
       };
-      utterance.onerror = (e) => {
+
+      audio.onerror = (e) => {
         this.speaking = false;
+        console.warn('TTS Audio error:', e);
         reject(e);
       };
 
-      this.speaking = true;
-      this.synth.speak(utterance);
+      audio.play().catch(e => {
+        this.speaking = false;
+        console.warn('Browser prevented audio play without interaction:', e);
+        reject(e);
+      });
     });
   }
 
@@ -110,12 +120,14 @@ class VoiceAnnouncer {
   }
 
   cancel() {
-    this.synth.cancel();
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+    }
     this.speaking = false;
   }
 
   isSpeaking() {
-    return this.speaking || this.synth.speaking;
+    return this.speaking || (this.currentAudio && !this.currentAudio.paused);
   }
 }
 
