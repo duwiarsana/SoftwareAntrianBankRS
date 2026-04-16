@@ -1,11 +1,10 @@
-// Voice announcement module using Google TTS (Natural Voice)
+// Voice announcement module using ResponsiveVoice (Natural TTS Plugin)
 
 class VoiceAnnouncer {
   constructor() {
     this.queue = [];
     this.speaking = false;
     this.chimeAudio = null;
-    this.currentAudio = null;
     this.initChime();
   }
 
@@ -56,13 +55,9 @@ class VoiceAnnouncer {
   }
 
   async announce(ticketNumber, counterName, settings = {}) {
-    // Fallback to Indonesian 'id' for Google TTS
-    const lang = settings.voiceLang ? settings.voiceLang.split('-')[0] : 'id';
-    // Base template
     const template = settings.voiceTemplate || 'Nomor antrian {number}, silakan menuju {counter}';
 
-    // To make it sound more natural, we spell out the letters and numbers
-    // In Indonesian, e.g., A 0 1 2 is spelled "A kosong satu dua"
+    // Spell out '0' to make it natural
     const parsedNumber = ticketNumber.split('').map(char => {
        if (char === '0') return 'kosong';
        return char;
@@ -79,36 +74,36 @@ class VoiceAnnouncer {
     await new Promise(r => setTimeout(r, 400));
 
     return new Promise((resolve, reject) => {
-      // Use Google TTS API for natural voice
-      const url = `https://translate.googleapis.com/translate_tts?client=gtx&tl=${lang}&ie=UTF-8&q=${encodeURIComponent(text)}`;
-      const audio = new Audio(url);
-      
-      // Optional: adjust rate if needed, though Google TTS sounds best at 1.0
-      // audio.playbackRate = settings.voiceRate || 1.0;
-
       this.speaking = true;
 
-      if (this.currentAudio) {
-        this.currentAudio.pause();
+      // Use ResponsiveVoice plugin if available
+      if (window.responsiveVoice) {
+         window.responsiveVoice.speak(text, "Indonesian Female", {
+             pitch: 1,
+             rate: settings.voiceRate || 0.9,
+             volume: 1,
+             onend: () => {
+                 this.speaking = false;
+                 resolve();
+             },
+             onerror: (e) => {
+                 this.speaking = false;
+                 console.warn("ResponsiveVoice error:", e);
+                 reject(e);
+             }
+         });
+      } else {
+         // Fallback to native Web Speech API
+         console.warn("ResponsiveVoice tidak ditemukan. Fallback ke sistem bawaan.");
+         const utterance = new SpeechSynthesisUtterance(text);
+         utterance.lang = 'id-ID';
+         utterance.rate = settings.voiceRate || 0.9;
+         
+         utterance.onend = () => { this.speaking = false; resolve(); };
+         utterance.onerror = (e) => { this.speaking = false; reject(e); };
+         
+         window.speechSynthesis.speak(utterance);
       }
-      this.currentAudio = audio;
-
-      audio.onended = () => {
-        this.speaking = false;
-        resolve();
-      };
-
-      audio.onerror = (e) => {
-        this.speaking = false;
-        console.warn('TTS Audio error:', e);
-        reject(e);
-      };
-
-      audio.play().catch(e => {
-        this.speaking = false;
-        console.warn('Browser prevented audio play without interaction:', e);
-        reject(e);
-      });
     });
   }
 
@@ -120,14 +115,19 @@ class VoiceAnnouncer {
   }
 
   cancel() {
-    if (this.currentAudio) {
-      this.currentAudio.pause();
+    if (window.responsiveVoice) {
+      window.responsiveVoice.cancel();
+    } else {
+      window.speechSynthesis.cancel();
     }
     this.speaking = false;
   }
 
   isSpeaking() {
-    return this.speaking || (this.currentAudio && !this.currentAudio.paused);
+    if (window.responsiveVoice) {
+      return this.speaking || window.responsiveVoice.isPlaying();
+    }
+    return this.speaking || window.speechSynthesis.speaking;
   }
 }
 
