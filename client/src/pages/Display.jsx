@@ -173,7 +173,7 @@ export default function Display() {
 
       {/* Main Content */}
       <div className="display-main">
-        {/* Currently Calling - Featured */}
+        {/* Calling Overlay */}
         {callingTicket && (
           <div className="display-calling animate-scale-in">
             <div className="calling-label">🔔 SEDANG DIPANGGIL</div>
@@ -187,69 +187,46 @@ export default function Display() {
           </div>
         )}
 
-        <div className="display-content">
-          {/* Serving Section */}
-          <div className="display-section serving-section">
-            <div className="section-title-bar">
-              <div className="section-icon">🟢</div>
-              <h2>SEDANG DILAYANI</h2>
-            </div>
-            <div className="serving-grid">
-              {serving.length === 0 ? (
-                <div className="empty-serving">Belum ada antrian aktif</div>
-              ) : (
-                serving.map((ticket) => (
-                  <div
-                    key={ticket.id}
-                    className={`serving-card glass-card ${
-                      callingTicket?.id === ticket.id ? 'is-calling' : ''
-                    }`}
-                  >
-                    <div className="serving-number">{ticket.ticketNumber}</div>
-                    <div className="serving-counter">
-                      <span className="serving-arrow">→</span>
-                      {ticket.counter?.name || '-'}
-                    </div>
-                    <div className="serving-service">{ticket.service?.name}</div>
+        <div className="display-content-split">
+          {/* Left Pane (Featured + Waiting) */}
+          <div className="display-left-pane">
+            <div className="display-featured glass-card">
+              <h2 className="featured-title">LOKET SAAT INI</h2>
+              {serving.length > 0 || callingTicket ? (
+                <div className="featured-ticket-info">
+                  <div className="featured-number">{callingTicket ? callingTicket.ticketNumber : serving[0].ticketNumber}</div>
+                  <div className="featured-counter">
+                    <span className="serving-arrow">→</span>
+                    {callingTicket ? callingTicket.counterName : (serving[0].counter?.name || '-')}
                   </div>
-                ))
+                </div>
+              ) : (
+                <div className="empty-state">Belum ada antrian aktif</div>
               )}
             </div>
-          </div>
 
-          {/* Right Side - Waiting + Ads */}
-          <div className="display-right">
-            {/* Waiting Section */}
-            <div className="display-section waiting-section">
+            <div className="display-waiting-small glass-card">
               <div className="section-title-bar">
                 <div className="section-icon">⏳</div>
                 <h2>MENUNGGU</h2>
                 <span className="waiting-count">{waiting.length}</span>
               </div>
-              <div className="waiting-list">
-                {waiting.length === 0 ? (
-                  <div className="empty-waiting">Tidak ada antrian menunggu</div>
-                ) : (
-                  <div className="waiting-grid">
-                    {waiting.slice(0, 20).map((ticket) => (
-                      <div key={ticket.id} className="waiting-chip">
-                        <span className="wc-number">{ticket.ticketNumber}</span>
-                      </div>
-                    ))}
-                    {waiting.length > 20 && (
-                      <div className="waiting-chip waiting-more">
-                        +{waiting.length - 20}
-                      </div>
-                    )}
-                  </div>
+              <div className="waiting-grid-small">
+                {waiting.slice(0, 10).map((ticket) => (
+                  <div key={ticket.id} className="waiting-chip-small">{ticket.ticketNumber}</div>
+                ))}
+                {waiting.length > 10 && (
+                  <div className="waiting-chip-small more">+{waiting.length - 10}</div>
                 )}
               </div>
             </div>
+          </div>
 
-            {/* Ads Section */}
-            {ads.length > 0 && (
-              <div className="display-ads">
-                <div className="ad-container">
+          {/* Right Pane (Ads) */}
+          <div className="display-right-pane">
+            {ads.length > 0 ? (
+              <div className="display-ads-new">
+                <div className="ad-container-new">
                   {ads[currentAdIndex]?.mediaType === 'VIDEO' ? (
                     <video
                       key={ads[currentAdIndex].id}
@@ -257,14 +234,14 @@ export default function Display() {
                       autoPlay
                       muted
                       loop
-                      className="ad-media"
+                      className="ad-media-new"
                     />
                   ) : (
                     <img
                       key={ads[currentAdIndex].id}
                       src={ads[currentAdIndex].mediaUrl}
                       alt={ads[currentAdIndex].title}
-                      className="ad-media"
+                      className="ad-media-new"
                     />
                   )}
                   <div className="ad-title">{ads[currentAdIndex]?.title}</div>
@@ -277,8 +254,27 @@ export default function Display() {
                   </div>
                 )}
               </div>
+            ) : (
+               <div className="display-ads-new empty-ads">
+                 <div className="empty-icon">📺</div>
+                 <p>Sistem Antrian Publik</p>
+               </div>
             )}
           </div>
+        </div>
+
+        {/* Bottom Row (Counters) */}
+        <div className="display-counters-row">
+          {serving.length === 0 ? (
+             <div className="empty-counters">Loket sedang kosong</div>
+          ) : (
+             serving.map((ticket) => (
+               <div key={ticket.id} className="counter-box glass-card">
+                 <div className="cb-counter">{ticket.counter?.name || '-'}</div>
+                 <div className="cb-number">{ticket.ticketNumber}</div>
+               </div>
+             ))
+          )}
         </div>
       </div>
 
